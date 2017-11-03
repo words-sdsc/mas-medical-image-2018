@@ -1,1 +1,1 @@
-# mas-medical-image-2018
+MAS Medical Image Analysis Project, 2017-2018
