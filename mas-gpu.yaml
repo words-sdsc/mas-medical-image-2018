@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mas-medical
+  labels:
+    k8s-app: mas-medical
+  namespace: mas-medical
+spec:
+  containers:
+  - name: mas-medical
+    image: sdsc/words-tensorflow-py3
+    imagePullPolicy: Always
+    # args: ["sleep", "36500000"]
+    #args: ["python3", "/usr/local/bin/jupyter-notebook", "--ip=*", "--port=8888", "--allow-root", "--NotebookApp.iopub_data_rate_limit=2147483647"]
+    resources:
+      limits:
+        #memory: "8G"
+        #cpu: 4
+        nvidia.com/gpu: 4
+      #requests:
+        #memory: "8G"
+        #cpu: 4
+        nvidia.com/gpu: 4
+  restartPolicy: Never
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    k8s-app: mas-medical
+  name: mas-medical
+  namespace: mas-medical
+spec:
+  type: NodePort
+  ports:
+  - port: 8888
+    name: web
+  selector:
+    k8s-app: mas-medical
