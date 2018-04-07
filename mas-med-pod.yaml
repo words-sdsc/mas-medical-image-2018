@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: masvol
+  namespace: mas-medical
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 512G
+  storageClassName: rook-block
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: masu16
+  namespace: mas-medical
+spec:
+  containers:
+  - name: masu16-container
+    env:
+    - name: DUMB_INIT_VER
+      value: 1.2.0
+    - name: AWS_KEY
+      value: xxx
+    - name: AWS_SECRET_KEY
+      value: xxx
+    image: joh112/mas-ubuntu16
+    imagePullPolicy: Always
+    args: ["sleep", "infinity"]
+    resources:
+      limits:
+        cpu: 8
+        memory: "40G"
+        nvidia.com/gpu: 4
+      requests:
+        cpu: 8
+        memory: "40G"
+        nvidia.com/gpu: 4
+    volumeMounts:
+    - mountPath: "/masvol"
+      name: masvol
+  restartPolicy: Never
+  volumes:
+    - name: masvol
+      persistentVolumeClaim:
+        claimName: masvol
